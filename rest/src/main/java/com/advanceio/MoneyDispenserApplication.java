@@ -4,10 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MoneyDispemserApplication {
+public class MoneyDispenserApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MoneyDispemserApplication.class, args);
+        System.setProperty("server.servlet.context-path", "/api");
+        SpringApplication.run(MoneyDispenserApplication.class, args);
     }
 
 }

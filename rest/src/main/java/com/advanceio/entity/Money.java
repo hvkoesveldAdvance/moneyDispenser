@@ -9,6 +9,10 @@ public class Money {
     private double value;
     private int amount;
 
+    public Money() {
+        super();
+    }
+
     public Money(Type type, double value, int amount) {
         this.type = type;
         this.value = value;
