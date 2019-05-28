@@ -2,7 +2,7 @@ package com.advanceio.dto;
 
 public class WithdrawRequestDTO {
 
-    double change;
+    private double change;
 
     public double getChange() {
         return change;
