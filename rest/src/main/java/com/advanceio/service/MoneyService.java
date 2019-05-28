@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.advanceio.dao.SingletonFundRepository;
 import com.advanceio.entity.Money;
+import com.advanceio.exception.BadRequestException;
 import com.google.common.collect.Lists;
 
 @Service
@@ -21,6 +22,10 @@ public class MoneyService {
     }
 
     public List<Money> withdraw(double change) {
+        if (change <= 0) {
+            throw new BadRequestException("Cannot withdraw no amount");
+        }
+
         List<Money> currentFunds = getSortedCurrentFunds();
 
         List<Money> currentWithdrawStack = calculateChange(change, currentFunds, Lists.newArrayList(), 0);
