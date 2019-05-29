@@ -1,6 +1,5 @@
 package com.advanceio.service;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.advanceio.dao.SingletonFundRepository;
 import com.advanceio.entity.Money;
 import com.advanceio.exception.BadRequestException;
+import com.advanceio.util.MoneyUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
@@ -19,7 +19,7 @@ public class MoneyService {
     private SingletonFundRepository funds;
 
     public List<Money> findAll() {
-        return getSortedCurrentFunds();
+        return MoneyUtil.sort(funds.findAll());
     }
 
     public List<Money> withdraw(double change) {
@@ -27,7 +27,7 @@ public class MoneyService {
             throw new BadRequestException("Cannot withdraw no amount");
         }
 
-        List<Money> currentFunds = getSortedCurrentFunds();
+        List<Money> currentFunds = MoneyUtil.sort(funds.findAll());
 
         List<Money> currentWithdrawStack = calculateChange(change, currentFunds, Lists.newArrayList(), 0);
 
@@ -56,15 +56,4 @@ public class MoneyService {
         int amountForCurrentMoneyNeeded = (new Double(Math.floor(change / value))).intValue();
         return amountForCurrentMoneyNeeded > actualCurrentAmountLeft ? actualCurrentAmountLeft : amountForCurrentMoneyNeeded;
     }
-
-    @VisibleForTesting
-    protected List<Money> getSortedCurrentFunds() {
-        List<Money> currentFunds = funds.findAll();
-
-        // can swap sorted order to get either more, or less number of items
-        currentFunds.sort(Comparator.comparing(Money::getValue).reversed());
-
-        return currentFunds;
-    }
-
 }

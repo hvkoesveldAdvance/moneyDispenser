@@ -69,32 +69,4 @@ public class MoneyServiceTest {
         int maxWithdrawable = moneyService.calculateMaximumWithdrawable(VALUE_CHANGE_LEFT, MONEY_VALUE, ACTUAL_CURRENT_AMOUNT_LEFT);
         assertTrue(maxWithdrawable == maxAmountAUserCanWithdraw);
     }
-    
-    @Test
-    public void shouldReturnReversedValueOrderedList() {
-        final int DEFAULT_AMOUNT_COINS = 20;
-        final List<Money> FULLY_SORTED_ARRAY = Lists.newArrayList(
-                new Money(Type.COIN, 1, DEFAULT_AMOUNT_COINS),
-                new Money(Type.COIN, 0.5, DEFAULT_AMOUNT_COINS),
-                new Money(Type.COIN, 0.2, DEFAULT_AMOUNT_COINS),
-                new Money(Type.COIN, 0.1, DEFAULT_AMOUNT_COINS)
-        );
-
-        Mockito.when(funds.findAll()).thenReturn(
-                Lists.newArrayList(
-                        new Money(Type.COIN, 0.5, DEFAULT_AMOUNT_COINS),
-                        new Money(Type.COIN, 0.1, DEFAULT_AMOUNT_COINS),
-                        new Money(Type.COIN, 0.2, DEFAULT_AMOUNT_COINS),
-                        new Money(Type.COIN, 1, DEFAULT_AMOUNT_COINS)
-                )
-        );
-
-        List<Money> arrayAfterSorting = moneyService.getSortedCurrentFunds();
-
-        for (int i = 0; i < arrayAfterSorting.size(); i++) {
-            double EXPECTED_VALUE = FULLY_SORTED_ARRAY.get(i).getValue();
-            double currentValue = arrayAfterSorting.get(i).getValue();
-            assertEquals(EXPECTED_VALUE, currentValue, 0);
-        }
-    }
 }
