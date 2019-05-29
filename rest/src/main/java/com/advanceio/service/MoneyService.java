@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.advanceio.dao.SingletonFundRepository;
 import com.advanceio.entity.Money;
 import com.advanceio.exception.BadRequestException;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 @Service
@@ -50,9 +51,10 @@ public class MoneyService {
         return calculateChange(change - actualAmountWithdrawn, fundsState, currentWithdrawStack, index + 1);
     }
 
-    private int calculateMaximumWithdrawable(double change, double value, int currentAmountLeft) {
+    @VisibleForTesting
+    protected int calculateMaximumWithdrawable(double change, double value, int actualCurrentAmountLeft) {
         int amountForCurrentMoneyNeeded = (new Double(Math.floor(change / value))).intValue();
-        return amountForCurrentMoneyNeeded > currentAmountLeft ? currentAmountLeft : amountForCurrentMoneyNeeded;
+        return amountForCurrentMoneyNeeded > actualCurrentAmountLeft ? actualCurrentAmountLeft : amountForCurrentMoneyNeeded;
     }
 
     private List<Money> getSortedCurrentFunds() {
