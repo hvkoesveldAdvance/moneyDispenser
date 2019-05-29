@@ -32,7 +32,7 @@ public class SingletonFundRepository {
                 new Money(Money.Type.COIN, 0.10, INITIAL_NUMBER),
                 new Money(Money.Type.COIN, 0.25, INITIAL_NUMBER)
         );
-        
+
         repository = initialMoney
                 .stream()
                 .collect(Collectors.toMap(Money::getValue, item -> item));
