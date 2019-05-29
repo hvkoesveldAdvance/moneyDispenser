@@ -1,15 +1,7 @@
 package com.advanceio;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.advanceio.exception.BadRequestException;
-import com.google.common.collect.Lists;
 
 @SpringBootApplication
 public class MoneyDispenserApplication {

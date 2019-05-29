@@ -1,5 +1,9 @@
 package com.advanceio.entity;
 
+import javax.persistence.Transient;
+
+import com.advanceio.exception.BadRequestException;
+
 public class Money {
     public enum Type {
         COIN
@@ -13,6 +17,11 @@ public class Money {
         super();
     }
 
+    @Transient
+    public void addFunds(int additionalFunds) {
+        amount = amount + additionalFunds;
+    }
+
     public Money(Type type, double value, int amount) {
         this.type = type;
         this.value = value;
@@ -20,6 +29,9 @@ public class Money {
     }
 
     public void withdraw(int numberForCurrentItem) {
+        if (numberForCurrentItem > this.amount) {
+            throw new BadRequestException("Cannot withdraw more than possible");
+        }
         this.amount -= numberForCurrentItem;
     }
 

@@ -35,4 +35,10 @@ public class MoneyController {
         List<Money> withdrawnFunds = moneyService.withdraw(request.getChange());
         return moneyMapper.toDTOsList(withdrawnFunds);
     }
+
+    @PostMapping()
+    public MoneyDTO withdrawFunds(@RequestBody MoneyDTO request) {
+        Money totalAmount = moneyService.add(moneyMapper.toEntity(request));
+        return moneyMapper.toDTO(totalAmount);
+    }
 }

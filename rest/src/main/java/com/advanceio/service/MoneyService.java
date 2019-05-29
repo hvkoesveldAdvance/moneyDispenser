@@ -1,6 +1,7 @@
 package com.advanceio.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,26 @@ public class MoneyService {
 
         List<Money> currentFunds = MoneyUtil.sort(funds.findAll());
 
-        List<Money> currentWithdrawStack = calculateChange(change, currentFunds);
+        List<Money> currentWithdrawStack = calculateChange(change, currentFunds, Lists.newArrayList(), 0);
 
         funds.performWithdrawal(currentWithdrawStack);
 
         return currentWithdrawStack;
+    }
+
+    public Money add(Money newAdditionMoney) {
+        if (newAdditionMoney.getAmount() <= 0) {
+            throw new BadRequestException("Amount of money to be added should be greater or equal to 1");
+        }
+        
+        Optional<Money> currentMoneyState = funds.find(newAdditionMoney.getValue());
+        
+        if (currentMoneyState.isPresent()) {
+            currentMoneyState.get().addFunds(newAdditionMoney.getAmount());
+            return currentMoneyState.get();
+        } else {
+            return funds.create(newAdditionMoney);
+        }
     }
 
     private List<Money> calculateChange(double change, List<Money> fundsState) {
@@ -67,6 +83,12 @@ public class MoneyService {
 
         return returnStack;
     }
+    
+    /**
+     * 0.5
+     * 
+     * 0.2 | 0.1 | 0.05
+     */
 
     private boolean canPerformWithdrawal(double [] denominatorsAvailable, Combination combination, List<Money> fundsState) {
         boolean successfulWithdraw = true;
@@ -97,6 +119,7 @@ public class MoneyService {
 //            }
         });
 
+        /// denominatorsAvailable = {0.25, 0.1, 0.05}
         double [] denominatorsAvailable = currentWithdrawDenominators
                 .stream()
                 .mapToDouble(Double::doubleValue)
@@ -120,7 +143,9 @@ public class MoneyService {
         Money currentMoney = fundsState.get(index);
         int maximumCurrentMoneyWithdrawable = calculateMaximumWithdrawable(change, currentMoney.getValue(), currentMoney.getAmount());
 
-        currentWithdrawStack.add(new Money(currentMoney.getType(), currentMoney.getValue(), maximumCurrentMoneyWithdrawable));
+        if (maximumCurrentMoneyWithdrawable > 0) {
+            currentWithdrawStack.add(new Money(currentMoney.getType(), currentMoney.getValue(), maximumCurrentMoneyWithdrawable));
+        }
         double actualAmountWithdrawn = maximumCurrentMoneyWithdrawable * currentMoney.getValue();
 
         return calculateChange(change - actualAmountWithdrawn, fundsState, currentWithdrawStack, index + 1);
@@ -132,3 +157,4 @@ public class MoneyService {
         return amountForCurrentMoneyNeeded > actualCurrentAmountLeft ? actualCurrentAmountLeft : amountForCurrentMoneyNeeded;
     }
 }
+

@@ -2,6 +2,7 @@ package com.advanceio.dao;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,8 @@ public class SingletonFundRepository {
                 new Money(Money.Type.COIN, 0.01, INITIAL_NUMBER),
                 new Money(Money.Type.COIN, 0.05, INITIAL_NUMBER),
                 new Money(Money.Type.COIN, 0.10, INITIAL_NUMBER),
-                new Money(Money.Type.COIN, 0.25, INITIAL_NUMBER)
+                new Money(Money.Type.COIN, 0.25, INITIAL_NUMBER),
+                new Money(Money.Type.COIN, 0.75, INITIAL_NUMBER)
         );
 
         repository = initialMoney
@@ -38,6 +40,17 @@ public class SingletonFundRepository {
                 .collect(Collectors.toMap(Money::getValue, item -> item));
     }
 
+
+    public Money create(Money newAdditionMoney) {
+        repository.put(newAdditionMoney.getValue(), newAdditionMoney);
+        return newAdditionMoney;
+    }
+
+    public Optional<Money> find(double valueID) {
+        Money money = repository.get(valueID);
+        return Optional.ofNullable(money);
+    }
+    
     public List<Money> findAll(){
         List<Money> currentFundsState = repository
                 .values()
@@ -55,5 +68,7 @@ public class SingletonFundRepository {
             repository.get(key).withdraw(money.getAmount());
         });
     }
+
+
 
 }
