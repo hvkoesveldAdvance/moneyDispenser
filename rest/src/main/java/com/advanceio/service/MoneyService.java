@@ -57,7 +57,8 @@ public class MoneyService {
         return amountForCurrentMoneyNeeded > actualCurrentAmountLeft ? actualCurrentAmountLeft : amountForCurrentMoneyNeeded;
     }
 
-    private List<Money> getSortedCurrentFunds() {
+    @VisibleForTesting
+    protected List<Money> getSortedCurrentFunds() {
         List<Money> currentFunds = funds.findAll();
 
         // can swap sorted order to get either more, or less number of items
